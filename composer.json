@@ -1,0 +1,28 @@
+{
+    "name": "msvujnovic/php-fqcn-parser",
+    "description": "Extracts a list of fully qualified class names from a list of files.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Marko S. Vujnovic",
+            "email": "msvujnovic@gmail.com"
+        }
+    ],
+    "require": {
+        "tightenco/collect": "^5.3"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.7"
+    },
+    "config": {
+        "platform": {
+            "php": "5.6"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "PhpFqcnParser\\": "src/"
+        }
+    }
+}
