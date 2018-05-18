@@ -11,7 +11,7 @@ use PhpFqcnParser\PhpFqcnParser;
  */
 class PhpFqcnParserTest extends \PHPUnit_Framework_TestCase
 {
-    public function testFoo()
+    public function testTwoRelativePathsAreSubmittedOneFileWithNamespaceAnotherWithout()
     {
         $parser = new PhpFqcnParser();
         $options = new Options(Options::PATH_TYPE_RELATIVE, dirname(__FILE__));

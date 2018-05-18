@@ -1,0 +1,18 @@
+language: php
+php:
+  - 5.6
+install: composer install
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+script: phpunit --coverage-clover tests/_output/clover.xml
+after_script:
+  - cp tests/_output/clover.xml .
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT -t clover
+  - php vendor/bin/codacycoverage clover tests/_output/clover.xml
+  - php vendor/bin/php-coveralls -c .coveralls.yml
+env:
+  global:
+    - CC_TEST_REPORTER_ID=276abefef81f029daa06f048008633b7c0eeb38892734f7a4de13bde53bb7440
+    - CODACY_PROJECT_TOKEN=8f8a0e5d5e654beb9a5dec9a58caf494

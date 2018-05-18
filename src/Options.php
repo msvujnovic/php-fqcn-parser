@@ -26,7 +26,7 @@ class Options
      * @param int    $pathType
      * @param string $basePath
      */
-    public function __construct($pathType, $basePath)
+    public function __construct($pathType, $basePath = '')
     {
         $this->setPathType($pathType);
         $this->setBasePath($basePath);
@@ -42,7 +42,7 @@ class Options
         $supportedTypes = [static::PATH_TYPE_RELATIVE, static::PATH_TYPE_ABSOLUTE];
 
         if (!in_array($pathType, $supportedTypes)) {
-            $supportedTypesString = implode($supportedTypes, ', ');
+            $supportedTypesString = implode(', ', $supportedTypes);
             throw new InvalidOptionException(
                 "Path type set to unsupported value $pathType. Supported values: $supportedTypesString"
             );

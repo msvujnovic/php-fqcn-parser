@@ -93,7 +93,7 @@ class PhpFqcnParser
 
             if ($readNamespace === true) {
                 if ($this->isTokenString($token) || $this->isTokenNsSeparator($token)) {
-                     $namespace .= $this->getTokenValue($token);
+                    $namespace .= $this->getTokenValue($token);
                     continue;
                 } elseif ($this->isTokenSemicolon($token)) {
                     $readNamespace = false;
