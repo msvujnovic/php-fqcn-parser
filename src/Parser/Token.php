@@ -11,7 +11,7 @@ class Token
     /**
      * @var mixed
      */
-    private $token;
+    protected $token;
 
     /**
      * Token constructor.

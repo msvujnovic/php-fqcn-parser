@@ -13,13 +13,21 @@ class Tokenizer
     /**
      * @param $string
      *
-     * @return Collection|Token[]
+     * @return Collection|LinkedListToken[]
      */
     public function tokenize($string)
     {
-        return Collection::make(token_get_all($string))
-            ->map(function ($token) {
-                return new Token($token);
-            });
+        $tokens = Collection::make(token_get_all($string))->map(function ($token) {
+            return new LinkedListToken(new Token($token));
+        });
+
+        $tokens->each(function (LinkedListToken $token, $offset) use ($tokens) {
+            $nextOffset = $offset + 1;
+            if ($tokens->has($nextOffset)) {
+                $token->setNext($tokens[$nextOffset]);
+            }
+        });
+
+        return $tokens;
     }
 }

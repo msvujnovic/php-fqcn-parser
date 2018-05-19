@@ -36,6 +36,16 @@ class PhpFqcnParserTest extends \PHPUnit_Framework_TestCase
         self::assertContains('Completely\Imaginary\Namespac\FooBarBazQuux', $fqcns);
     }
 
+    public function testFilesWithMultipleClassesAreParsedCorrectly()
+    {
+        $parser = new PhpFqcnParser();
+        $options = new Options(Options::PATH_TYPE_RELATIVE, dirname(__FILE__));
+        $fqcns = $parser->execute(['sample-with-ns-two-classes.php'], $options);
+
+        self::assertContains('Completely\Imaginary\Namespac\FooBar', $fqcns);
+        self::assertContains('Completely\Imaginary\Namespac\BazQuux', $fqcns);
+    }
+
     public function testInvalidOptionExceptionIsThrownIfPathTypeIsRelativeAndBasePathIsEmpty()
     {
         $parser = new PhpFqcnParser();

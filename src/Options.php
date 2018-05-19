@@ -14,11 +14,11 @@ class Options
     /**
      * @var int
      */
-    private $pathType;
+    protected $pathType;
     /**
      * @var string
      */
-    private $basePath;
+    protected $basePath;
 
     /**
      * Options constructor.
@@ -37,7 +37,7 @@ class Options
      *
      * @throws InvalidOptionException
      */
-    private function validatePathType($pathType)
+    protected function validatePathType($pathType)
     {
         $supportedTypes = [static::PATH_TYPE_RELATIVE, static::PATH_TYPE_ABSOLUTE];
 
