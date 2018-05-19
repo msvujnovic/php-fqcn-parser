@@ -23,7 +23,7 @@ class FileFactory
         return Collection::make($relativePaths)->map(function ($path) use ($basePath) {
             $relativePath = ltrim($path, DIRECTORY_SEPARATOR);
             $absolutePath = $basePath . DIRECTORY_SEPARATOR . $relativePath;
-            return new File($path, $absolutePath);
+            return new File($absolutePath);
         });
     }
 
@@ -35,7 +35,7 @@ class FileFactory
     public function createFromAbsolutePaths(array $absolutePaths)
     {
         return Collection::make($absolutePaths)->map(function ($path) {
-            return new File($path, $path);
+            return new File($path);
         });
     }
 }

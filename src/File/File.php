@@ -11,76 +11,40 @@ class File
     /**
      * @var string
      */
-    private $originalPath;
-
-    /**
-     * @var string
-     */
     private $absolutePath;
-
-    /**
-     * @var string
-     */
-    private $contents;
-
-    private $contentsLoaded = false;
 
     /**
      * File constructor.
      *
-     * @param string $originalPath
      * @param string $absolutePath
      */
-    public function __construct($originalPath, $absolutePath = '')
+    public function __construct($absolutePath)
     {
-        $this->originalPath = $originalPath;
         $this->absolutePath = $absolutePath;
     }
 
     /**
-     * @return mixed
+     * @return bool
      */
-    public function getOriginalPath()
+    public function doesExist()
     {
-        return $this->originalPath;
+        if (!file_exists($this->absolutePath)) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
      * @return string
-     */
-    public function getAbsolutePath()
-    {
-        return $this->absolutePath;
-    }
-
-    /**
-     * @return string
+     * @throws FileNotFoundException
      */
     public function getContents()
     {
-        $this->readContents();
-        return $this->contents;
-    }
-
-    /**
-     * @throws AbsolutePathNotSetException
-     * @throws FileNotFoundException
-     */
-    private function readContents()
-    {
-        if ($this->contentsLoaded) {
-            return;
-        }
-
-        if (empty($this->absolutePath)) {
-            throw new AbsolutePathNotSetException($this->originalPath);
-        }
-
-        if (!file_exists($this->absolutePath)) {
+        if (!$this->doesExist()) {
             throw new FileNotFoundException($this->absolutePath);
         }
 
-        $this->contents = file_get_contents($this->absolutePath);
-        $this->contentsLoaded = true;
+        return file_get_contents($this->absolutePath);
     }
 }

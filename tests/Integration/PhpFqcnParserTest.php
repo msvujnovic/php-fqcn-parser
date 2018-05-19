@@ -2,6 +2,7 @@
 
 namespace PhpFqcnParser\Tests\Integration;
 
+use PhpFqcnParser\InvalidOptionException;
 use PhpFqcnParser\Options;
 use PhpFqcnParser\PhpFqcnParser;
 
@@ -19,5 +20,27 @@ class PhpFqcnParserTest extends \PHPUnit_Framework_TestCase
 
         self::assertContains('FooBarBazQuuxNoNamespace', $fqcns);
         self::assertContains('Completely\Imaginary\Namespac\FooBarBazQuux', $fqcns);
+    }
+
+    public function testTwoAbsolutePathsAreSubmittedOneFileWithNamespaceAnotherWithout()
+    {
+        $parser = new PhpFqcnParser();
+        $options = new Options(Options::PATH_TYPE_ABSOLUTE);
+
+        $fqcns = $parser->execute(
+            [realpath(__DIR__ . '/sample-no-ns.php'), realpath(__DIR__ . '/sample-with-ns.php')],
+            $options
+        );
+
+        self::assertContains('FooBarBazQuuxNoNamespace', $fqcns);
+        self::assertContains('Completely\Imaginary\Namespac\FooBarBazQuux', $fqcns);
+    }
+
+    public function testInvalidOptionExceptionIsThrownIfPathTypeIsRelativeAndBasePathIsEmpty()
+    {
+        $parser = new PhpFqcnParser();
+        $options = new Options(Options::PATH_TYPE_RELATIVE);
+        self::expectException(InvalidOptionException::class);
+        $parser->execute(['foo'], $options);
     }
 }
