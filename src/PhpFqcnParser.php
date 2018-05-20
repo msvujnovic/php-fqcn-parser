@@ -13,9 +13,15 @@ use PhpFqcnParser\Parser\Parser;
  */
 class PhpFqcnParser
 {
-    public function getFqcnsFromFiles(array $filePaths, Options $options)
+    /**
+     * @param string[] $fileNames
+     * @param Options  $options
+     *
+     * @return string[]
+     */
+    public function getFqcnsFromFiles(array $fileNames, Options $options)
     {
-        $files = $this->getFiles($filePaths, $options);
+        $files = $this->getFiles($fileNames, $options);
         $onlyExistingFiles = $files->filter(function (File $file) {
             return $file->doesExist();
         });

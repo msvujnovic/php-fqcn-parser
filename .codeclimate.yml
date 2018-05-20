@@ -1,0 +1,15 @@
+# disabling checks because of extreme amount of false positives
+engines:
+  phan:
+    enabled: true
+    checks:
+      PhanUndeclaredClassMethod:
+        enabled: false
+      PhanUndeclaredTypeParameter:
+        enabled: false
+      PhanUndeclaredClassConstant:
+        enabled: false
+      PhanUndeclaredExtendedClass:
+        enabled: false
+      PhanUndeclaredMethod:
+        enabled: false

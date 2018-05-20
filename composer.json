@@ -28,5 +28,6 @@
         "psr-4": {
             "PhpFqcnParser\\": "src/"
         }
-    }
+    },
+    "bin": ["bin/fqcnparser.php"]
 }

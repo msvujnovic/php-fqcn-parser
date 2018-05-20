@@ -2,7 +2,6 @@
 
 namespace PhpFqcnParser\Tests\Integration;
 
-use PhpFqcnParser\InvalidOptionException;
 use PhpFqcnParser\Options;
 use PhpFqcnParser\PhpFqcnParser;
 
