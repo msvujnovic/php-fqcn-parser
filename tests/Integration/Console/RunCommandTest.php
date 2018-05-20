@@ -12,7 +12,81 @@ use Symfony\Component\Process\Process;
  */
 class RunCommandTest extends \PHPUnit_Framework_TestCase
 {
-    public function testerProvider()
+    public function fileNamesPassedViaInputFileProvider()
+    {
+        $file1RelativePath = '/../sample-with-ns.php';
+        $file2RelativePath = '/../sample-with-ns-two-classes.php';
+        $file1AbsolutePath = realpath(__DIR__ . $file1RelativePath);
+        $file2AbsolutePath = realpath(__DIR__ . $file2RelativePath);
+        $basePath = __DIR__;
+
+        return [
+            'Absolute paths as input file via long option' => [
+                [$file1AbsolutePath, $file2AbsolutePath],
+                null,
+                null,
+                '--' . RunCommand::OPT_INPUTFILE
+            ],
+            'Absolute paths as input file via short option' => [
+                [$file1AbsolutePath, $file2AbsolutePath],
+                null,
+                null,
+                '-' . RunCommand::OPT_INPUTFILE_SHORT
+            ],
+            'Relative paths as input file via long base path and long input file options' => [
+                [$file1RelativePath, $file2RelativePath],
+                '--' . RunCommand::OPT_BASEPATH,
+                $basePath,
+                '--' . RunCommand::OPT_INPUTFILE
+            ],
+            'Relative paths as input file via long base path and short input file options' => [
+                [$file1RelativePath, $file2RelativePath],
+                '--' . RunCommand::OPT_BASEPATH,
+                $basePath,
+                '-' . RunCommand::OPT_INPUTFILE_SHORT
+            ],
+            'Relative paths as input file via short base base path and long input file options' => [
+                [$file1RelativePath, $file2RelativePath],
+                '-' . RunCommand::OPT_BASEPATH_SHORT,
+                $basePath,
+                '--' . RunCommand::OPT_INPUTFILE
+            ],
+            'Relative paths as input file via short base base path and short input file options' => [
+                [$file1RelativePath, $file2RelativePath],
+                '-' . RunCommand::OPT_BASEPATH_SHORT,
+                $basePath,
+                '-' . RunCommand::OPT_INPUTFILE_SHORT
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider fileNamesPassedViaInputFileProvider
+     *
+     * @param string[]    $args
+     * @param string|null $opt
+     * @param string|null $optVal
+     * @param string      $inputOpt
+     */
+    public function testFileNamesPassedViaInputFile($args, $opt, $optVal, $inputOpt)
+    {
+        $tmpFile = '/tmp/PhpFqcnParserRunCommandTest' . uniqid();
+        file_put_contents($tmpFile, implode(PHP_EOL, $args));
+
+        $command = new RunCommand();
+        $tester = new CommandTester($command);
+        $argsAndOpts = [$inputOpt => $tmpFile];
+        if ($opt) {
+            $argsAndOpts[$opt] = $optVal;
+        }
+        $tester->execute($argsAndOpts);
+
+        unlink($tmpFile);
+
+        $this->assertOutput($tester->getDisplay());
+    }
+
+    public function fileNamesPassedAsArgsProvider()
     {
         $file1RelativePath = '/../sample-with-ns.php';
         $file2RelativePath = '/../sample-with-ns-two-classes.php';
@@ -37,7 +111,7 @@ class RunCommandTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider testerProvider
+     * @dataProvider fileNamesPassedAsArgsProvider
      *
      * @param string[]    $args
      * @param string|null $opt
@@ -103,7 +177,7 @@ class RunCommandTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider processProvider
-     * @group slow
+     * @group        slow
      *
      * @param string $args
      * @param string $opts
