@@ -13,10 +13,8 @@ use PhpFqcnParser\Parser\Parser;
  */
 class PhpFqcnParser
 {
-    public function execute(array $filePaths, Options $options)
+    public function getFqcnsFromFiles(array $filePaths, Options $options)
     {
-        $this->validateOptions($options);
-
         $files = $this->getFiles($filePaths, $options);
         $onlyExistingFiles = $files->filter(function (File $file) {
             return $file->doesExist();
@@ -24,22 +22,10 @@ class PhpFqcnParser
 
         $parser = new Parser();
         $fqcns = $onlyExistingFiles->map(function (File $file) use ($parser) {
-            return $parser->getFqCns($file->getContents());
+            return $parser->getFqcns($file->getContents());
         })->flatten();
 
         return $fqcns->toArray();
-    }
-
-    /**
-     * @param Options $options
-     *
-     * @throws InvalidOptionException
-     */
-    protected function validateOptions(Options $options)
-    {
-        if ($options->getPathType() === Options::PATH_TYPE_RELATIVE && empty($options->getBasePath())) {
-            throw new InvalidOptionException("Empty base path passed for path type relative");
-        }
     }
 
     /**
@@ -52,7 +38,7 @@ class PhpFqcnParser
     {
         $factory = new FileFactory();
 
-        if ($options->getPathType() === Options::PATH_TYPE_RELATIVE) {
+        if ($options->isPathTypeRelative()) {
             return $factory->createFromRelativeAndBasePath($filePaths, $options->getBasePath());
         }
 

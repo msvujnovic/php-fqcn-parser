@@ -11,10 +11,19 @@ use PhpFqcnParser\Options;
  */
 class OptionsTest extends \PHPUnit_Framework_TestCase
 {
-    public function testSetPathTypeThrowsInvalidOptionExceptionOnInvalidPathType()
+    public function testSetPathTypeRelativeThrowsInvalidOptionExceptionOnInvalidBasePath()
     {
-        $pathType = uniqid();
         self::expectException(InvalidOptionException::class);
-        new Options($pathType);
+        (new Options())->setPathTypeRelative(uniqid());
+    }
+
+    public function testIsPathRelativeReturnsTrueOnRelativePath()
+    {
+        self::assertTrue((new Options())->setPathTypeRelative(__DIR__)->isPathTypeRelative());
+    }
+
+    public function testIsPathRelativeReturnsFalseOnAbsolutePath()
+    {
+        self::assertFalse((new Options())->setPathTypeAbsolute()->isPathTypeRelative());
     }
 }

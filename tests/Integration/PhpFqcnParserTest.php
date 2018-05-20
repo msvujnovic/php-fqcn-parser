@@ -15,8 +15,8 @@ class PhpFqcnParserTest extends \PHPUnit_Framework_TestCase
     public function testTwoRelativePathsAreSubmittedOneFileWithNamespaceAnotherWithout()
     {
         $parser = new PhpFqcnParser();
-        $options = new Options(Options::PATH_TYPE_RELATIVE, dirname(__FILE__));
-        $fqcns = $parser->execute(['sample-no-ns.php', 'sample-with-ns.php'], $options);
+        $options = (new Options())->setPathTypeRelative(dirname(__FILE__));
+        $fqcns = $parser->getFqcnsFromFiles(['sample-no-ns.php', 'sample-with-ns.php'], $options);
 
         self::assertContains('FooBarBazQuuxNoNamespace', $fqcns);
         self::assertContains('Completely\Imaginary\Namespac\FooBarBazQuux', $fqcns);
@@ -25,9 +25,9 @@ class PhpFqcnParserTest extends \PHPUnit_Framework_TestCase
     public function testTwoAbsolutePathsAreSubmittedOneFileWithNamespaceAnotherWithout()
     {
         $parser = new PhpFqcnParser();
-        $options = new Options(Options::PATH_TYPE_ABSOLUTE);
+        $options = (new Options())->setPathTypeAbsolute();
 
-        $fqcns = $parser->execute(
+        $fqcns = $parser->getFqcnsFromFiles(
             [realpath(__DIR__ . '/sample-no-ns.php'), realpath(__DIR__ . '/sample-with-ns.php')],
             $options
         );
@@ -39,18 +39,10 @@ class PhpFqcnParserTest extends \PHPUnit_Framework_TestCase
     public function testFilesWithMultipleClassesAreParsedCorrectly()
     {
         $parser = new PhpFqcnParser();
-        $options = new Options(Options::PATH_TYPE_RELATIVE, dirname(__FILE__));
-        $fqcns = $parser->execute(['sample-with-ns-two-classes.php'], $options);
+        $options = (new Options())->setPathTypeRelative(dirname(__FILE__));
+        $fqcns = $parser->getFqcnsFromFiles(['sample-with-ns-two-classes.php'], $options);
 
         self::assertContains('Completely\Imaginary\Namespac\FooBar', $fqcns);
         self::assertContains('Completely\Imaginary\Namespac\BazQuux', $fqcns);
-    }
-
-    public function testInvalidOptionExceptionIsThrownIfPathTypeIsRelativeAndBasePathIsEmpty()
-    {
-        $parser = new PhpFqcnParser();
-        $options = new Options(Options::PATH_TYPE_RELATIVE);
-        self::expectException(InvalidOptionException::class);
-        $parser->execute(['foo'], $options);
     }
 }

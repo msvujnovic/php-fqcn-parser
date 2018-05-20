@@ -12,7 +12,7 @@ class Options
     const PATH_TYPE_ABSOLUTE = 'absolute';
 
     /**
-     * @var int
+     * @var string
      */
     protected $pathType;
     /**
@@ -21,52 +21,37 @@ class Options
     protected $basePath;
 
     /**
-     * Options constructor.
-     *
-     * @param int    $pathType
+     * @return bool
+     */
+    public function isPathTypeRelative()
+    {
+        return $this->pathType === static::PATH_TYPE_RELATIVE;
+    }
+
+    /**
      * @param string $basePath
-     */
-    public function __construct($pathType, $basePath = '')
-    {
-        $this->setPathType($pathType);
-        $this->setBasePath($basePath);
-    }
-
-    /**
-     * @param $pathType
-     *
-     * @throws InvalidOptionException
-     */
-    protected function validatePathType($pathType)
-    {
-        $supportedTypes = [static::PATH_TYPE_RELATIVE, static::PATH_TYPE_ABSOLUTE];
-
-        if (!in_array($pathType, $supportedTypes)) {
-            $supportedTypesString = implode(', ', $supportedTypes);
-            throw new InvalidOptionException(
-                "Path type set to unsupported value $pathType. Supported values: $supportedTypesString"
-            );
-        }
-    }
-
-    /**
-     * @return int
-     */
-    public function getPathType()
-    {
-        return $this->pathType;
-    }
-
-    /**
-     * @param int $pathType
      *
      * @return $this
+     * @throws InvalidOptionException
      */
-    public function setPathType($pathType)
+    public function setPathTypeRelative($basePath)
     {
-        $this->validatePathType($pathType);
-        $this->pathType = $pathType;
+        if (!is_dir($basePath)) {
+            throw new InvalidOptionException("Nonexistent base path passed when setting path type as relative");
+        }
 
+        $this->pathType = static::PATH_TYPE_RELATIVE;
+        $this->basePath = $basePath;
+
+        return $this;
+    }
+
+    /**
+     * @return $this
+     */
+    public function setPathTypeAbsolute()
+    {
+        $this->pathType = static::PATH_TYPE_ABSOLUTE;
         return $this;
     }
 
@@ -76,13 +61,5 @@ class Options
     public function getBasePath()
     {
         return $this->basePath;
-    }
-
-    /**
-     * @param string $basePath
-     */
-    public function setBasePath($basePath)
-    {
-        $this->basePath = $basePath;
     }
 }

@@ -15,7 +15,7 @@ class Parser
      *
      * @return Collection|string[]
      */
-    public function getFqCns($string)
+    public function getFqcns($string)
     {
         $namespace = "";
         $classes = Collection::make([]);
